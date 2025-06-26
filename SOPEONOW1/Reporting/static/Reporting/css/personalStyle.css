@@ -1,0 +1,788 @@
+/* Reporting/static/Reporting/css/personalStyle.css */
+
+/* global style */
+* {
+  padding: 0px !important;
+  margin: 0px !important;
+  box-sizing: border-box !important;
+}
+
+/* styles to body */
+body {
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  /* Prevent body scroll if not intended for main page */
+}
+
+/* topNavbar styling */
+.topNavbar {
+  background: linear-gradient(90deg, white, #fe6464);
+  height: 7%;
+}
+
+.topNavbarleft {
+  width: 15%;
+}
+
+.logo {
+  width: 2em;
+  height: 1.1em;
+}
+
+.topNavbarlefttext {
+  color: #353571;
+}
+
+.topNavbarright {
+  width: 22%;
+}
+
+.topNavbarrightprofileicon {
+  color: #f5945c !important;
+  background-color: #ffeaca;
+}
+
+/* Main block styling */
+main {
+  width: 100%;
+  height: 93%;
+}
+
+/* main Navbar or side Navbar styling */
+.mainNavbar {
+  width: 4%;
+  background: linear-gradient(to bottom, #8a4367, #333572);
+  box-shadow: 1px 0px 13px 0px rgb(200, 193, 181);
+}
+
+.mainNavbarelement:hover {
+  background-color: #666795;
+  border-radius: 0.8em;
+}
+
+.mainNavbarelement {
+  width: 80%;
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.activesidebar {
+  background-color: #666795 !important;
+  border-radius: 0.5em;
+}
+
+/* Key Metrics styling */
+.keymetrics {
+  width: 27%;
+  display: flex;
+  /* Added for flex-grow on child */
+  flex-direction: column;
+  /* Added for flex-grow on child */
+}
+
+.keymetricsheading {
+  background-color: #fbd0d9;
+  font-size: 1.3em;
+  font-weight: 500;
+  height: 6%;
+  flex-shrink: 0;
+  /* Prevent shrinking */
+}
+
+.keymetricsitemtime {
+  font-size: 1.2em;
+}
+
+.keymetricsitem {
+  background-color: #fbfdff;
+  height: 7.5%;
+  /* This might need to be less rigid if keymetrics-list-container is used */
+  border: 1px solid #e3ebeb;
+  opacity: 0.5;
+  transition: all 0.2s ease-in-out;
+  /* Ensure flex properties for children if not already done by bootstrap */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+/* This container should wrap the list of .keymetricsitem elements in HTML if they overflow */
+.keymetrics-list-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+
+.keymetricsitemsubtext {
+  font-size: 0.6em;
+  color: grey;
+}
+
+.activekeymetricsitem {
+  background-color: #e5e6ec !important;
+  opacity: 1 !important;
+  border: 2px solid #d8ddee !important;
+}
+
+.totaliptransfercounticon {
+  top: 6%;
+  left: 52%;
+  background-color: rgb(224, 224, 224);
+  color: black;
+}
+
+#iptransferscount {
+  font-size: 1.5em;
+}
+
+.clock {
+  font-size: 0.8em;
+  color: rgb(153, 152, 152);
+}
+
+.keymetricsitem:hover {
+  opacity: 1 !important;
+  background-color: #e5e6ec !important;
+}
+
+/* total visit card */
+.totalvisitscard {
+  width: 100%;
+  height: 13%;
+  background-color: #6a6b9f;
+  border-radius: 0.5em;
+  box-shadow: 1px 0px 13px 0px rgb(200, 193, 181);
+  flex-shrink: 0;
+  /* Prevent shrinking */
+}
+
+.tvcrhssubheadtwo {
+  font-size: 0.55em;
+  color: rgb(189, 189, 189);
+}
+
+.tvcrhssubheadone {
+  height: 22%;
+}
+
+.tvcrhstext {
+  background-color: #fdf3f3;
+  color: #fe6464;
+}
+
+.tvclhstext {
+  background-color: #9d9dc6;
+}
+
+.tvclhssubhead {
+  padding-bottom: 0.67em !important;
+}
+
+/* below total visits card, below tvc styles */
+.belowtvc {
+  height: 14.4%;
+  text-align: center;
+  flex-shrink: 0;
+  /* Prevent shrinking */
+}
+
+.belowtvcfirst {
+  gap: 0.2em;
+}
+
+.belowtvcsecond {
+  gap: 0.2em;
+}
+
+.clockcards {
+  font-size: 1em;
+  color: rgb(153, 152, 152);
+}
+
+.belowtvccards {
+  background-color: #e5e6ec !important;
+  border: 1px solid #d8ddee !important;
+}
+
+.insurancecounttext {
+  font-size: 1.3em;
+  color: #6f3653;
+}
+
+.selfpaycounttext {
+  font-size: 1.3em;
+  color: #61277c;
+}
+
+.internationalcounttext {
+  font-size: 1.3em;
+  color: #353571;
+}
+
+.localcounttext {
+  font-size: 1.3em;
+  color: #545454;
+}
+
+.belowtvcitemsubtext {
+  font-size: 0.6em;
+  color: #8a4367;
+}
+
+.belowtvcitemtime {
+  font-size: 0.9em;
+}
+
+/* combined third section styles */
+.combinedthirdsection {
+  width: 69%;
+  height: 100%;
+}
+
+/* first row style */
+.firstrow {
+  height: 30%;
+}
+
+/* zone statistics styling */
+.zonestatistics {
+  width: 71%;
+}
+
+.zone-statistics-card {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 3px;
+}
+
+.zone-statistics-card table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 2px 2px !important;
+  flex-grow: 1;
+  table-layout: fixed;
+}
+
+.zone-statistics-card th,
+.zone-statistics-card td {
+  padding: 2px 4px !important;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.68rem !important;
+  line-height: 1.25 !important;
+  border: none !important;
+  border-radius: 5px !important;
+}
+
+.zone-statistics-card .title-header,
+.zone-statistics-card .zone-header {
+  color: white;
+  font-weight: 600 !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  font-size: 0.8em !important;
+}
+
+.zone-statistics-card .title-header {
+  background-color: #5A5F92;
+  padding-left: 8px !important;
+  padding-right: 6px !important;
+}
+
+.zone-statistics-card .zone-header {
+  text-align: center !important;
+  padding-left: 3px !important;
+  padding-right: 3px !important;
+}
+
+.zone-statistics-card .green-header {
+  background-color: #63B979 !important;
+}
+
+.zone-statistics-card .yellow-header {
+  background-color: #F0B752 !important;
+}
+
+.zone-statistics-card .red-header {
+  background-color: #E96064 !important;
+}
+
+.zone-statistics-card .icon-cell,
+.zone-statistics-card .stat-name {
+  background-color: #F8F9FA !important;
+}
+
+.zone-statistics-card .icon-cell {
+  width: 30px !important;
+  text-align: center;
+  color: #757575;
+  font-size: 0.9em !important;
+}
+
+.zone-statistics-card .stat-name {
+  color: #757575;
+  font-weight: 700 !important;
+  text-align: right;
+  /* Reverted to original or check if left is intended */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-right: 6px !important;
+}
+
+.zone-statistics-card .data-cell {
+  text-align: center !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.zone-statistics-card .cell-bg-green.data-cell {
+  background-color: #E7F4E8 !important;
+}
+
+.zone-statistics-card .cell-bg-yellow.data-cell {
+  background-color: #FEF6E6 !important;
+}
+
+.zone-statistics-card .cell-bg-red.data-cell {
+  background-color: #FDEEEE !important;
+}
+
+.zone-statistics-card .data-lozenge {
+  display: inline-block;
+  background-color: white !important;
+  padding: 2px 6px !important;
+  border-radius: 10px;
+  font-size: 1em !important;
+  min-width: 20px;
+  text-align: center;
+  line-height: 1.2 !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.zone-statistics-card .data-lozenge b {
+  font-weight: 600 !important;
+  color: #212529;
+}
+
+.zone-statistics-card .data-lozenge.time-val {
+  padding: 2px 5px !important;
+}
+
+.zone-statistics-card .data-lozenge i.fa-clock {
+  margin-right: 2px !important;
+  font-size: 0.85em !important;
+  color: #6c757d;
+  vertical-align: middle;
+}
+
+.zone-statistics-card .time-text-green {
+  color: #63B979 !important;
+}
+
+.zone-statistics-card .time-text-red {
+  color: #E96064 !important;
+}
+
+/* End of Zone Statistics Styling */
+
+.triagebyintervalmap {
+  /* Container for chart */
+  height: 100%;
+  width: 29%;
+  /* Adjusted from 35% to make space if needed */
+  /* background-color: #353571; --  Removed as chart divs get white bg in HTML */
+}
+
+.secondrow {
+  height: 30%;
+  width: 100%;
+}
+
+.thirdrow {
+  height: 38%;
+  /* Check this if doctor table overflows height constraint */
+  width: 100%;
+}
+
+.waitingdashboard {
+  width: 45%;
+}
+
+.waitingstatusart {
+  border-radius: 0.3em;
+  background-color: rgb(254, 245, 245);
+  border: 1px solid #dcdcdc;
+}
+
+.smallfor {
+  font-weight: 600;
+  font-size: 0.8em;
+  color: white;
+}
+
+.waitingstatheadingtext {
+  font-size: 1.2em;
+  font-weight: 800;
+  /* color: #353571; -- Overridden by next line */
+  padding-left: 0.5em;
+  color: white;
+}
+
+.waitingfortriagestatheader {
+  background: linear-gradient(to bottom, #4c3b56, #8f72a0);
+  border-radius: 0.3em;
+}
+
+.waitingforconsultationstatheader {
+  background-color: #8a4367;
+  border-radius: 0.3em;
+}
+
+.waitingforstatnumber {
+  font-size: 2.5em;
+  color: #585858;
+}
+
+#waitingfortriagetime {
+  font-size: 2.1em;
+}
+
+#waitingforconsultationtime {
+  font-size: 2.1em;
+}
+
+.waitingfortriage,
+.waitingforconsultation {
+  box-shadow: 0px 0px 5px 0px rgb(209, 209, 209);
+  border: 1px solid #dcdcdc;
+  border-radius: 0.5em;
+}
+
+/* doctor statistics styling */
+/* === Doctor Statistics (Image Style) === */
+.doctorstatistics-wrapper {
+  background-color: #F4F6F9;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 55%;
+  display: flex !important;
+  flex-direction: column !important;
+  /* Max-height can be useful if the parent .thirdrow has a defined height */
+  /* max-height: 100%; */
+  /* Or a specific pixel value if .thirdrow is fixed */
+}
+
+.doctor-stats-main-header {
+  background: #6A70A7;
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
+  /* HTML p-3 class provides padding, e.g., padding: 1rem !important; */
+}
+
+.doctor-stats-main-header h5 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  /* HTML m-0 class handles margin */
+}
+
+.doctor-stats-main-header .fa-user-injured {
+  font-size: 1.2em;
+}
+
+.search-container-img {
+  width: 220px;
+}
+
+.search-icon-img {
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9090B0;
+  font-size: 0.9em;
+  z-index: 10;
+}
+
+.search-input-img {
+  padding-left: 35px !important;
+  /* Space for icon from global * rule */
+  background-color: white;
+  border: 1px solid #DDE2E8;
+  color: #333;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  height: calc(1.5em + .5rem + 2px);
+}
+
+.search-input-img::placeholder {
+  color: #AEB5C1;
+  opacity: 1;
+}
+
+.search-input-img:focus {
+  background-color: white;
+  border-color: #A0A8E0;
+  box-shadow: 0 0 0 0.2rem rgba(106, 112, 167, 0.25);
+  color: #333;
+}
+
+#doctorTableContainerImg {
+  flex-grow: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  /* px-3 gives horizontal padding */
+  padding-left: 1rem !important;
+  /* from px-3 in HTML */
+  padding-right: 1rem !important;
+  /* from px-3 in HTML */
+  /* Reduce top/bottom padding for the container itself */
+  padding-top: 0.2rem !important;
+  /* Minimal top padding */
+  padding-bottom: 0.2rem !important;
+  /* Minimal bottom padding */
+}
+
+.doctor-table-header-row {
+  font-size: 0.85rem;
+  color: #555C65;
+  /* mb-2 gives margin-bottom: 0.5rem */
+  margin-bottom: 0.25rem !important;
+  /* Reduced margin for header */
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
+}
+
+.doctor-table-header-row>div {
+  padding-bottom: 2px !important;
+  /* Minimal bottom padding for header text */
+}
+
+/* Styling for each doctor data row (will be a div) */
+.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row {
+  display: flex !important;
+  align-items: center !important;
+  /* Vertically center content within the fixed height */
+  background-color: white !important;
+  border: 1px solid #ECEFF1 !important;
+  border-radius: 8px !important;
+
+  /* === KEY CHANGE: FIXED HEIGHT & PADDING === */
+  /* Calculate desired height: e.g. (total available height for rows / 4) - margin_between_rows */
+  /* This is an estimate, you'll need to fine-tune it based on the actual height of #doctorTableContainerImg */
+  /* Let's try an approximate height and adjust. Font size is 0.9rem (approx 14.4px) */
+  height: 40px !important;
+  /* EXAMPLE: Adjust this value carefully */
+  padding-left: 10px !important;
+  /* Horizontal padding */
+  padding-right: 10px !important;
+  /* Horizontal padding */
+  /* Vertical padding is implicitly handled by align-items: center and fixed height */
+
+  margin-bottom: 4px !important;
+  /* Reduced space between rows */
+  /* =========================================== */
+
+  font-size: 0.9rem !important;
+  color: #343A40 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03) !important;
+  transition: box-shadow 0.2s ease-in-out !important;
+}
+
+.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row:last-child {
+  margin-bottom: 0 !important;
+}
+
+.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.doctor-data-row .doctor-name-cell {
+  flex-basis: 50% !important;
+  font-weight: 500 !important;
+}
+
+.doctor-data-row .patients-cell {
+  flex-basis: 25% !important;
+  text-align: center !important;
+}
+
+.doctor-data-row .patients-lozenge {
+  display: inline-block !important;
+  background-color: #ECEFF1 !important;
+  color: #546E7A !important;
+  padding: 4px 12px !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+}
+
+.doctor-data-row .time-cell {
+  flex-basis: 25% !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+}
+
+.doctor-data-row .time-cell .far.fa-clock,
+.doctor-data-row .time-cell .material-symbols-outlined.clock {
+  color: #90A4AE;
+  margin-right: 5px;
+  font-size: 0.9em;
+  vertical-align: middle;
+}
+
+.doctor-data-row .time-cell .time-value.text-success {
+  color: #28A745 !important;
+}
+
+.doctor-data-row .time-cell .time-value.text-danger {
+  color: #DC3545 !important;
+}
+
+/* Pagination (Image Style) */
+#doctorPaginationContainerImg {
+  /* HTML p-3 provides padding: 1rem */
+}
+
+#doctorPaginationContainerImg .pagination {
+  margin-bottom: 0 !important;
+  /* Remove default BS margin */
+}
+
+#doctorPaginationContainerImg .page-item .page-link {
+  color: #6C757D;
+  background-color: #F8F9FA;
+  border: 1px solid #DEE2E6;
+  margin: 0 3px !important;
+  /* Small gap between page items */
+  border-radius: 6px !important;
+  padding: 0.35rem 0.65rem !important;
+  font-size: 0.85rem;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#doctorPaginationContainerImg .page-item .page-link:hover {
+  background-color: #E9ECEF;
+  color: #495057;
+}
+
+#doctorPaginationContainerImg .page-item.active .page-link {
+  z-index: 3;
+  color: #fff;
+  background-color: #6A70A7;
+  border-color: #6A70A7;
+}
+
+#doctorPaginationContainerImg .page-item.disabled .page-link {
+  color: #ADB5BD;
+  pointer-events: none;
+  background-color: #F8F9FA;
+  border-color: #DEE2E6;
+}
+
+#doctorPaginationContainerImg .page-item.disabled .page-link[aria-disabled="true"] span {
+  color: #6C757D;
+}
+
+#doctorPaginationContainerImg .page-item .page-link[aria-label="Previous"]::before {
+  content: "<";
+}
+
+#doctorPaginationContainerImg .page-item .page-link[aria-label="Next"]::before {
+  content: ">";
+}
+
+/* ================================================= */
+/* === STYLES FOR CHARTS AND MODAL (from previous) === */
+/* ================================================= */
+
+.chart-container {
+  /* This class would be manually added to chart parent divs in HTML if used */
+  padding: 10px !important;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.chart-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal styles - Bootstrap handles this but custom ones provided earlier */
+/* If using Bootstrap modal, ensure its CSS is loaded and not overridden here unless intended */
+
+/* The following keyframes and custom modal styling might conflict if Bootstrap's modal is working fine. */
+/* Consider removing if Bootstrap modal is preferred and working. */
+/*
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: fadeIn 0.3s;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 25px !important;
+  border: none;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 900px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  animation: slideIn 0.4s;
+}
+
+.modal-title-text {
+  color: #333;
+  font-weight: 600;
+}
+
+.close-modal-btn { // This class isn't on the Bootstrap modal button, which uses .btn-close
+  color: #aaa;
+  float: right;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.close-modal-btn:hover,
+.close-modal-btn:focus {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-chart-container { // This is #modalChartContainer in your HTML
+  height: 450px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } } */
