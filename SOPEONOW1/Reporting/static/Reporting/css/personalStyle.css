@@ -581,23 +581,12 @@ main {
   background-color: white !important;
   border: 1px solid #ECEFF1 !important;
   border-radius: 8px !important;
-
-  /* === KEY CHANGE: FIXED HEIGHT & PADDING === */
-  /* Calculate desired height: e.g. (total available height for rows / 4) - margin_between_rows */
-  /* This is an estimate, you'll need to fine-tune it based on the actual height of #doctorTableContainerImg */
-  /* Let's try an approximate height and adjust. Font size is 0.9rem (approx 14.4px) */
-  height: 40px !important;
+  height: 2.1em !important;
   /* EXAMPLE: Adjust this value carefully */
   padding-left: 10px !important;
   /* Horizontal padding */
   padding-right: 10px !important;
-  /* Horizontal padding */
-  /* Vertical padding is implicitly handled by align-items: center and fixed height */
-
-  margin-bottom: 4px !important;
-  /* Reduced space between rows */
-  /* =========================================== */
-
+  /* margin-bottom: 4px !important; */
   font-size: 0.9rem !important;
   color: #343A40 !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03) !important;
@@ -626,13 +615,14 @@ main {
   display: inline-block !important;
   background-color: #ECEFF1 !important;
   color: #546E7A !important;
-  padding: 4px 12px !important;
+  padding: 1px 12px !important;
   border-radius: 6px !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
 }
 
 .doctor-data-row .time-cell {
+
   flex-basis: 25% !important;
   text-align: center !important;
   font-weight: 500 !important;
@@ -709,7 +699,7 @@ main {
 }
 
 /* ================================================= */
-/* === STYLES FOR CHARTS AND MODAL (from previous) === */
+/* === STYLES FOR CHARTS AND MODAL  === */
 /* ================================================= */
 
 .chart-container {
@@ -725,6 +715,21 @@ main {
 .chart-container:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 25px !important;
+  border: none;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 900px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.4s;
+  position: absolute;
+  top: 20%;
+  left: 30%;
 }
 
 /* Modal styles - Bootstrap handles this but custom ones provided earlier */
@@ -746,17 +751,7 @@ main {
   animation: fadeIn 0.3s;
 }
 
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto;
-  padding: 25px !important;
-  border: none;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 900px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  animation: slideIn 0.4s;
-}
+
 
 .modal-title-text {
   color: #333;
