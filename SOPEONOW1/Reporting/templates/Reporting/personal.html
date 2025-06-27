@@ -1,19 +1,15 @@
 {% load static %}
 {% load app_filters %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Live Dashboard</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script> <!-- Note: ApexCharts is used below, so this might be redundant unless used elsewhere -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Management Live Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"  rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -21,9 +17,58 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.44.0/dist/apexcharts.min.js"></script>
-    
-    <link rel="stylesheet" href="{% static 'Reporting/css/personalStyle.css' %}">
     <script src="{% static 'Reporting/js/dash.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'Reporting/css/personalStyle.css' %}">
+    
+    <style>
+        /* Additional styles for charts */
+        .triagebyintervalmap, .traigebyzonemap, .patientsbyInterval, .patientsbyDoctor {
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        
+        .triagebyintervalmap:hover, .traigebyzonemap:hover, 
+        .patientsbyInterval:hover, .patientsbyDoctor:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* Modal styles */
+        .modal-xl {
+            max-width: 90%;
+        }
+        
+        #modalChartContainer {
+            width: 100%;
+            height: 500px;
+        }
+        
+        /* Pagination styles for better contrast */
+        #doctorPaginationContainerImg .page-link {
+            background-color: #6A70A7;
+            color: white;
+            border: 1px solid #5A5F92;
+        }
+        
+        #doctorPaginationContainerImg .page-link:hover {
+            background-color: #5A5F92;
+            color: white;
+        }
+        
+        #doctorPaginationContainerImg .page-item.active .page-link {
+            background-color: #353571;
+            border-color: #353571;
+            color: white;
+        }
+        
+        #doctorPaginationContainerImg .page-item.disabled .page-link {
+            background-color: #e9ecef;
+            color: #6c757d;
+            border-color: #dee2e6;
+        }
+    </style>
 </head>
 <body>
   <!-- Top Navbar -->
@@ -71,10 +116,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center activekeymetricsitem">
           <div class="keymetricsitemsubtext">Queue to Registration</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Registration Time</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Registration Time</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="registrationtime" class="text-danger">{{ data.key_metrics.registration.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="registrationtime" class="{{ data.key_metrics.registration.time|get_time_class }}">{{ data.key_metrics.registration.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -82,10 +130,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Registration to Triage</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Time to Triage</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Time to Triage</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="timetotriage" class="text-success">{{ data.key_metrics.triage_done.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="timetotriage" class="{{ data.key_metrics.triage_done.time|get_time_class }}">{{ data.key_metrics.triage_done.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -93,10 +144,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Triage to Consult</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Time to Consult</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Time to Consult</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="timetoconsult" class="text-success">{{ data.key_metrics.cons_done.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="timetoconsult" class="{{ data.key_metrics.cons_done.time|get_time_class }}">{{ data.key_metrics.cons_done.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -104,10 +158,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Triage End to Discharge</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>In Zone Time</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>In Zone Time</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="inzoneTime" class="text-danger">{{ data.key_metrics.in_zone.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="inzoneTime" class="{{ data.key_metrics.in_zone.time|get_time_class }}">{{ data.key_metrics.in_zone.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -115,10 +172,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Consultation to Discharge</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Treatment Time</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Treatment Time</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="treatmenttime" class="text-danger">{{ data.key_metrics.treatment.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="treatmenttime" class="{{ data.key_metrics.treatment.time|get_time_class }}">{{ data.key_metrics.treatment.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -126,10 +186,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Lab Order Request to Processing</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Lab Processing Time</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Lab Processing Time</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="labprocessingtime" class="text-danger">00:00</b> <!-- No data in JSON -->
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="labprocessingtime" class="text-danger">02:34</b>
             </span>
           </div>
         </div>
@@ -137,10 +200,13 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center">
           <div class="keymetricsitemsubtext">Radiology Order Request to Processing</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>Radiology Processing Time</b></span>
+            <span class="keymetricsitemtext me-auto"> <b>Radiology Processing Time</b>
+            </span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock">schedule</span>
-              <b id="radiologyprocessingtime" class="text-danger">00:00</b> <!-- No data in JSON -->
+               <span class="material-symbols-outlined align-middle me-2 clock">
+                schedule
+                </span>
+              <b id="radiologyprocessingtime" class="text-danger">02:34</b>
             </span>
           </div>
         </div>
@@ -148,14 +214,14 @@
         <div class="keymetricsitem w-100 p-2 rounded-3 d-flex flex-column justify-content-center position-relative ">
           <div class="keymetricsitemsubtext">UCC Discharge to IP Bed Allotment</div>
           <div class="keymetricsitemtextblock d-flex align-items-start">
-            <span class="keymetricsitemtext me-auto"> <b>IP Transfers</b></span>
-            <span class="px-2 py-1 rounded-3 position-absolute totaliptransfercounticon">
-                <i class="fa-solid fa-user fa-xs px-2"></i>
-                <b id="iptransferscount">{{ data.key_metrics.ip_transfers.total_count }}</b>
+            <span class="keymetricsitemtext me-auto"> <b>IP Transfers</b>
             </span>
+            <span class="px-2 py-1 rounded-3 position-absolute totaliptransfercounticon"><i class="fa-solid fa-user fa-xs px-2"></i><b id="iptransferscount">{{ data.key_metrics.ip_transfers.total_count }}</b></span>
             <span class="keymetricsitemtime">
-               <span class="material-symbols-outlined align-middle me-2 clock ">schedule</span>
-              <b id="iptransferstime" class="text-success ">{{ data.key_metrics.ip_transfers.completed.time | seconds_to_hhmm }}</b>
+               <span class="material-symbols-outlined align-middle me-2 clock ">
+                schedule
+                </span>
+              <b id="iptransferstime" class="{{ data.key_metrics.ip_transfers.completed.time|get_time_class }}">{{ data.key_metrics.ip_transfers.completed.time|seconds_to_hhmm }}</b>
             </span>
           </div>
         </div>
@@ -169,20 +235,26 @@
           <div class="tvcrhs d-flex flex-column align-items-center justify-content-start w-50 h-100 p-1 flex-shrink-1">
             <div class="tvcrhssubheadone"><b>Visit Time</b></div>
             <div class="tvcrhssubheadtwo">Registration to discharge</div>
-            <div class="tvcrhstext px-3 py-1 fs-4 rounded-3 mt-1" id="visittime"><b>{{ data.completed.avg_act_tm | seconds_to_hhmm }}</b></div>
+            <div class="tvcrhstext px-3 py-1 fs-4 rounded-3 mt-1" id="visittime"><b>{{ data.completed.avg_act_tm|seconds_to_hhmm }}</b></div>
           </div>
         </div>
 
+        <!-- entire section of cards below total visit card -->
         <div class="belowtvc w-100 d-flex flex-column gap-1 flex-shrink-1">
+
+          <!-- first row of cards below total visit card insurance and self pay -->
           <div class="belowtvcfirst d-flex h-50 w-100">
             <div class="belowtvccards w-50 d-flex rounded-3">
               <div class="insurancecard w-100 rounded-3 d-flex flex-column justify-content-center h-100 p-1" style="background-color: #fff7fb;">
                 <div class="belowtvcitemsubtext text-start pt-2"><i class="fa-solid fa-umbrella-beach pe-1"></i>Insurance</div>
                   <div class="d-flex align-items-center">
-                    <span class=" insurancecounttext me-auto"> <b id ="insurancecount">{{ data.completed.Payor.Insurance.count }}</b></span>
+                    <span class=" insurancecounttext me-auto"> <b id ="insurancecount">{{ data.completed.Payor.Insurance.count }}</b>
+                    </span>
                     <span class="belowtvcitemtime d-flex align-items-center">
-                        <span class="material-symbols-outlined align-middle clockcards pe-1">schedule</span>
-                        <b id="insurancetime" class="text-success">{{ data.completed.Payor.Insurance.time | seconds_to_hhmm }}</b>
+                        <span class="material-symbols-outlined align-middle clockcards pe-1">
+                          schedule
+                        </span>
+                        <b id="insurancetime" class="{{ data.completed.Payor.Insurance.time|get_time_class }}">{{ data.completed.Payor.Insurance.time|seconds_to_hhmm }}</b>
                     </span>
                   </div>
               </div>
@@ -192,25 +264,32 @@
               <div class="selfpaycard w-100 rounded-3 d-flex flex-column justify-content-center h-100 p-1" style="background-color: #fdf8ff;">
                 <div class="belowtvcitemsubtext text-start pt-2" style="color: #61277c;" ><i class="fa-solid fa-umbrella-beach pe-1"></i>Self Pay</div>
                 <div class="d-flex align-items-center">
-                  <span class=" selfpaycounttext me-auto"> <b id ="selfpaycount">{{ data.completed.Payor.Self_Pay.count }}</b></span>
+                  <span class=" selfpaycounttext me-auto"> <b id ="selfpaycount">{{ data.completed.Payor.Self_Pay.count }}</b>
+                  </span>
                   <span class="belowtvcitemtime d-flex align-items-center">
-                      <span class="material-symbols-outlined align-middle clockcards pe-1">schedule</span>
-                      <b id="selfpaytime" class="text-danger">{{ data.completed.Payor.Self_Pay.time | seconds_to_hhmm }}</b>
+                      <span class="material-symbols-outlined align-middle clockcards pe-1">
+                        schedule
+                      </span>
+                      <b id="selfpaytime" class="{{ data.completed.Payor.Self_Pay.time|get_time_class }}">{{ data.completed.Payor.Self_Pay.time|seconds_to_hhmm }}</b>
                   </span>
                 </div>
               </div>
             </div>   
           </div>
 
+          <!-- second cards row below total visit card  international and local-->
            <div class="belowtvcsecond d-flex h-50 w-100">
             <div class="belowtvccards w-50 d-flex rounded-3">
               <div class="internationalcard w-100 rounded-3 p-1 d-flex flex-column justify-content-center h-100" style="background-color: #f5f5ff;">
                 <div class="belowtvcitemsubtext text-start pt-2" style="color: #353571;"><i class="fa-solid fa-umbrella-beach pe-1"></i>International</div>
                   <div class="d-flex align-items-center">
-                    <span class=" internationalcounttext me-auto"> <b id ="internationalcount">{{ data.completed.Residency.International.count }}</b></span>
+                    <span class=" internationalcounttext me-auto"> <b id ="internationalcount">{{ data.completed.Residency.International.count }}</b>
+                    </span>
                     <span class="belowtvcitemtime d-flex align-items-center">
-                        <span class="material-symbols-outlined align-middle clockcards pe-1">schedule</span>
-                        <b id="internationaltime" class="text-danger">{{ data.completed.Residency.International.time | seconds_to_hhmm }}</b>
+                        <span class="material-symbols-outlined align-middle clockcards pe-1">
+                          schedule
+                        </span>
+                        <b id="internationaltime" class="{{ data.completed.Residency.International.time|get_time_class }}">{{ data.completed.Residency.International.time|seconds_to_hhmm }}</b>
                     </span>
                   </div>
               </div>
@@ -220,10 +299,13 @@
               <div class="localcard w-100 rounded-3 p-1 d-flex flex-column justify-content-center h-100" style="background-color: #f5f5f5;">
                 <div class="belowtvcitemsubtext text-start pt-2" style="color: #545454;"><i class="fa-solid fa-umbrella-beach pe-1"></i>Local</div>
                 <div class="d-flex align-items-center">
-                  <span class=" localcounttext me-auto"> <b id ="localcount">{{ data.completed.Residency.Local.count }}</b></span>
+                  <span class=" localcounttext me-auto"> <b id ="localcount">{{ data.completed.Residency.Local.count }}</b>
+                  </span>
                   <span class="belowtvcitemtime d-flex align-items-center">
-                      <span class="material-symbols-outlined align-middle clockcards pe-1">schedule</span>
-                      <b id="localtime" class="text-success">{{ data.completed.Residency.Local.time | seconds_to_hhmm }}</b>
+                      <span class="material-symbols-outlined align-middle clockcards pe-1">
+                        schedule
+                      </span>
+                      <b id="localtime" class="{{ data.completed.Residency.Local.time|get_time_class }}">{{ data.completed.Residency.Local.time|seconds_to_hhmm }}</b>
                   </span>
                 </div>
               </div>
@@ -235,16 +317,20 @@
       <!-- third combined zone -->
       <div class=" combinedthirdsection d-flex flex-column gap-1 py-1">
         
+        <!-- first row  -->
         <div class="firstrow d-flex gap-1 w-100">
+
+          <!-- zone statistics -->
           <div class="zonestatistics h-100 rounded-3"> 
             <div class="zone-statistics-card">
+                <div class="zone-statistics-card">
                   <table>
                       <colgroup>
-                          <col style="width: 30px;">
-                          <col style="width: 45%;">
-                          <col style="width: auto;">
-                          <col style="width: auto;">
-                          <col style="width: auto;">
+                          <col style="width: 30px;">  <!-- Icon column -->
+                          <col style="width: 45%;">  <!-- Stat Name column -->
+                          <col style="width: auto;">  <!-- Green Zone -->
+                          <col style="width: auto;">  <!-- Yellow Zone -->
+                          <col style="width: auto;">  <!-- Red Zone -->
                       </colgroup>
                       <thead>
                           <tr>
@@ -279,49 +365,56 @@
                           <tr>
                               <td class="icon-cell"><i class="far fa-clock"></i></td>
                               <td class="stat-name">Average Triage Time</td>
-                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-green" id="avgTriageTimeGreen">{{ data.zonestats.green.avg_triage_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-red" id="avgTriageTimeYellow">{{ data.zonestats.yellow.avg_triage_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-red" id="avgTriageTimeRed">{{ data.zonestats.red.avg_triage_tm | seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.green.avg_triage_tm|get_time_class }}" id="avgTriageTimeGreen">{{ data.zonestats.green.avg_triage_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.yellow.avg_triage_tm|get_time_class }}" id="avgTriageTimeYellow">{{ data.zonestats.yellow.avg_triage_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.red.avg_triage_tm|get_time_class }}" id="avgTriageTimeRed">{{ data.zonestats.red.avg_triage_tm|seconds_to_hhmm }}</b></span></td>
                           </tr>
-                          <tr> <!-- Mapped "Average Hold time" to "avg_zone_tm" -->
+                          <tr>
                               <td class="icon-cell"><i class="fas fa-stopwatch"></i></td>
                               <td class="stat-name">Average Hold time</td>
-                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-red" id="avgHoldTimeGreen">{{ data.zonestats.green.avg_zone_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-red" id="avgHoldTimeYellow">{{ data.zonestats.yellow.avg_zone_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-green" id="avgHoldTimeRed">{{ data.zonestats.red.avg_zone_tm | seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.green.avg_cons_tm|get_time_class }}" id="avgHoldTimeGreen">{{ data.zonestats.green.avg_cons_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.yellow.avg_cons_tm|get_time_class }}" id="avgHoldTimeYellow">{{ data.zonestats.yellow.avg_cons_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.red.avg_cons_tm|get_time_class }}" id="avgHoldTimeRed">{{ data.zonestats.red.avg_cons_tm|seconds_to_hhmm }}</b></span></td>
                           </tr>
                           <tr>
                               <td class="icon-cell"><i class="fas fa-user-clock"></i></td>
                               <td class="stat-name">Average Visit Time</td>
-                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-green" id="avgVisitTimeGreen">{{ data.zonestats.green.avg_visit_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-green" id="avgVisitTimeYellow">{{ data.zonestats.yellow.avg_visit_tm | seconds_to_hhmm }}</b></span></td>
-                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="time-text-green" id="avgVisitTimeRed">{{ data.zonestats.red.avg_visit_tm | seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-green data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.green.avg_visit_tm|get_time_class }}" id="avgVisitTimeGreen">{{ data.zonestats.green.avg_visit_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-yellow data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.yellow.avg_visit_tm|get_time_class }}" id="avgVisitTimeYellow">{{ data.zonestats.yellow.avg_visit_tm|seconds_to_hhmm }}</b></span></td>
+                              <td class="cell-bg-red data-cell"><span class="data-lozenge time-val"><i class="far fa-clock"></i> <b class="{{ data.zonestats.red.avg_visit_tm|get_time_class }}" id="avgVisitTimeRed">{{ data.zonestats.red.avg_visit_tm|seconds_to_hhmm }}</b></span></td>
                           </tr>
                       </tbody>
                   </table>
+              </div>
             </div>
           </div>
 
-           <div class="triagebyintervalmap p-2 me-1 h-100" style="background-color: #fff; border-radius: 8px; width: 29%;"> 
-                <div id="triageTimeByIntervalChart" style="height:100%;"></div>
+          <!-- first map -->
+           <div class="triagebyintervalmap p-2 me-1 " style="background-color: #353571;">
+
            </div>
         </div>
 
+         <!-- second row -->
         <div class="secondrow d-flex flex-row gap-1 p-1 w-100">
-          <div class="traigebyzonemap h-100 p-2" style="width: 33.3%; background-color: #fff; border-radius: 8px;">
-            <div id="patientsByZoneChart" style="height:100%;"></div>
-          </div>
-          <div class="patientsbyInterval h-100 p-2" style="width: 33.3%; background-color: #fff; border-radius: 8px;">
-            <div id="patientsByIntervalChart" style="height:100%;"></div>
-          </div>
-          <div class="patientsbyDoctor h-100 p-2" style="width: 33.3%; background-color: #fff; border-radius: 8px;">
-            <div id="consultationByDoctorChart" style="height:100%;"></div>
-          </div>
+
+          <!-- Map traige by zone -->
+          <div class="traigebyzonemap h-100 bg-white rounded" style="width: 33.3%;"></div>
+
+          <!-- Map patients by Interval -->
+          <div class="patientsbyInterval h-100 bg-white rounded" style="width: 33.3%;"></div>
+
+          <!-- Map patients by Doctor -->
+          <div class="patientsbyDoctor h-100 bg-white rounded" style="width: 33.3%;"></div>
         </div>
 
          <!-- third row -->
           <div class="thirdrow d-flex gap-1">
+
+            <!-- waiting dashboard -->
             <div class="waitingdashboard d-flex flex-row gap-1 h-100 flex-shrink-1 ps-1 ">
+              
+              <!-- first column -->
               <div class="waitingstatusart" style="width: 30%;">
                 <div class="waitingstatustextsubheader text-secondary pt-2 ps-2 fw-semibold">Current</div>
                 <div class="waitingstatustext ps-2 text-danger fw-semibold">Waiting Status</div>
@@ -330,26 +423,37 @@
                 </div>
               </div>
 
+              <!-- second column -->
               <div class="waitingstats d-flex flex-column gap-1 h-100" style="width: 70%;">
+
+                <!-- waiting for triage -->
                 <div class="waitingfortriage h-50 w-100">
                     <div class="waitingfortriagestatheader p-2"><i class="fa-solid fa-suitcase-medical fa-lg text-white"></i> <span class="smallfor">for</span> <span class="waitingstatheadingtext">Triage</span></div>
                     <div class="waitngfortraiagestats d-flex flex-row w-100 align-items-center justify-content-around" style="height: 65%;">
                       <div class="waitingforstatnumber"><i class="fa-solid fa-person fa-xs pe-1"></i><b id="waitingfortriagecount">{{ data.inprogress.pdTriage.count }}</b></div>
                       <div class="vr text-secondary my-3 fw-bold"></div>
-                      <div class="waitingforstattime"><span class="material-symbols-outlined align-middle me-1 mb-3" style="color: #9d9c9c;">schedule</span> <b id="waitingfortriagetime" style="color: #ec7777;">{{ data.inprogress.pdTriage.time | seconds_to_hhmm }}</b></div>
+                      <div class="waitingforstattime"><span class="material-symbols-outlined align-middle me-1 mb-3" style="color: #9d9c9c;">
+                schedule
+                </span> <b id="waitingfortriagetime" class="{{ data.inprogress.pdTriage.time|get_time_class }}">{{ data.inprogress.pdTriage.time|seconds_to_hhmm }}</b></div>
                     </div>
                 </div>
+
+                <!-- waiting for Consultation -->
                  <div class="waitingforconsultation h-50 w-100">
                     <div class="waitingforconsultationstatheader p-2"><i class="fa-solid fa-user-doctor text-white"></i> <span class="smallfor">for</span> <span class="waitingstatheadingtext">Consultation</span></div>
                     <div class="waitngfortraiagestats d-flex flex-row w-100 align-items-center justify-content-around" style="height: 65%">
                       <div class="waitingforstatnumber"><i class="fa-solid fa-person fa-xs pe-1"></i><b id="waitingforconsultationcount">{{ data.inprogress.pdConsultation.count }}</b></div>
                       <div class="vr text-secondary my-3 fw-bold"></div>
-                      <div class="waitingforstattime"><span class="material-symbols-outlined align-middle me-1 mb-3" style="color: #9d9c9c;">schedule</span> <b id="waitingforconsultationtime" style="color: #79d075;">{{ data.inprogress.pdConsultation.time | seconds_to_hhmm }}</b></div>
+                      <div class="waitingforstattime"><span class="material-symbols-outlined align-middle me-1 mb-3" style="color: #9d9c9c;">
+                schedule
+                </span> <b id="waitingforconsultationtime" class="{{ data.inprogress.pdConsultation.time|get_time_class }}">{{ data.inprogress.pdConsultation.time|seconds_to_hhmm }}</b></div>
                     </div>
                 </div>
               </div>
             </div>
+            <!-- waiting card ends here -->
 
+            <!-- doctor statistics table -->
             <div class="doctorstatistics-wrapper h-100 d-flex flex-column me-1">
                 <div class="doctor-stats-main-header d-flex justify-content-between align-items-center p-3">
                     <h5 class="m-0 fw-semibold"><i class="fas fa-user-injured me-2"></i>Doctor Statistics</h5>
@@ -358,41 +462,28 @@
                         <input type="text" id="doctorSearchInputImg" class="form-control form-control-sm search-input-img" placeholder="Search here...">
                     </div>
                 </div>
+
                 <div id="doctorTableContainerImg" class="flex-grow-1 overflow-auto px-3 pt-2">
+                    <!-- Table header row (static or generated by JS) -->
                     <div class="doctor-table-header-row d-flex text-muted fw-bold mb-2">
                         <div style="flex-basis: 50%;">Doctor</div>
                         <div style="flex-basis: 25%; text-align: center;">Patients</div>
                         <div style="flex-basis: 25%; text-align: center;">Time</div>
                     </div>
+                    <!-- Actual doctor data rows will be injected here by JavaScript -->
                     <div id="doctorDataRowsContainer">
-                        <!-- Doctor data rows will be injected here by JavaScript -->
+                        <!-- Placeholder if needed -->
+                        <p class="text-center text-muted p-5">Loading doctor data...</p>
                     </div>
                 </div>
+
                 <div id="doctorPaginationContainerImg" class="p-3 d-flex justify-content-center align-items-center">
-                    <!-- Pagination controls will be injected here by JavaScript -->
+                    <!-- Pagination controls will be injected by JavaScript -->
                 </div>
             </div>
         </div>
       </div>
+
    </main>
-
-    <!-- Chart Modal -->
-    <div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-centered"> 
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="chartModalLabel">Chart Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="chartModalCloseButton"></button>
-          </div>
-          <div class="modal-body">
-            <div id="modalChartContainer" style="min-height: 450px;"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script id="django-data" type="application/json">
-        {{ json_data_for_js|safe }}
-    </script>
 </body>
 </html>

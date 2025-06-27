@@ -1,5 +1,3 @@
-/* Reporting/static/Reporting/css/personalStyle.css */
-
 /* global style */
 * {
   padding: 0px !important;
@@ -12,8 +10,6 @@ body {
   height: 100vh;
   width: 100vw;
   font-family: 'Inter', sans-serif;
-  overflow: hidden;
-  /* Prevent body scroll if not intended for main page */
 }
 
 /* topNavbar styling */
@@ -48,6 +44,7 @@ body {
 main {
   width: 100%;
   height: 93%;
+
 }
 
 /* main Navbar or side Navbar styling */
@@ -57,9 +54,11 @@ main {
   box-shadow: 1px 0px 13px 0px rgb(200, 193, 181);
 }
 
+
 .mainNavbarelement:hover {
   background-color: #666795;
   border-radius: 0.8em;
+  /* your specified color */
 }
 
 .mainNavbarelement {
@@ -78,10 +77,6 @@ main {
 /* Key Metrics styling */
 .keymetrics {
   width: 27%;
-  display: flex;
-  /* Added for flex-grow on child */
-  flex-direction: column;
-  /* Added for flex-grow on child */
 }
 
 .keymetricsheading {
@@ -89,9 +84,25 @@ main {
   font-size: 1.3em;
   font-weight: 500;
   height: 6%;
-  flex-shrink: 0;
-  /* Prevent shrinking */
 }
+
+/* this was the implementation of the key metrics item using grid */
+/* .keymetricsitem {
+  background-color: #f8f8f0;
+  justify-items: left;
+  align-items: center;
+  grid-template-rows: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 3em;
+} */
+
+/* .keymetricsitemtime {
+  grid-row: 1/3;
+  grid-column: 2/3;
+  justify-self: end;
+  align-self: end;
+} */
 
 .keymetricsitemtime {
   font-size: 1.2em;
@@ -100,29 +111,17 @@ main {
 .keymetricsitem {
   background-color: #fbfdff;
   height: 7.5%;
-  /* This might need to be less rigid if keymetrics-list-container is used */
   border: 1px solid #e3ebeb;
   opacity: 0.5;
-  transition: all 0.2s ease-in-out;
-  /* Ensure flex properties for children if not already done by bootstrap */
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
 }
-
-/* This container should wrap the list of .keymetricsitem elements in HTML if they overflow */
-.keymetrics-list-container {
-  flex-grow: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
 
 .keymetricsitemsubtext {
   font-size: 0.6em;
   color: grey;
+}
+
+.keymetricsitemtext {
+  /* color: grey; */
 }
 
 .activekeymetricsitem {
@@ -150,6 +149,7 @@ main {
 .keymetricsitem:hover {
   opacity: 1 !important;
   background-color: #e5e6ec !important;
+
 }
 
 /* total visit card */
@@ -159,8 +159,6 @@ main {
   background-color: #6a6b9f;
   border-radius: 0.5em;
   box-shadow: 1px 0px 13px 0px rgb(200, 193, 181);
-  flex-shrink: 0;
-  /* Prevent shrinking */
 }
 
 .tvcrhssubheadtwo {
@@ -189,8 +187,6 @@ main {
 .belowtvc {
   height: 14.4%;
   text-align: center;
-  flex-shrink: 0;
-  /* Prevent shrinking */
 }
 
 .belowtvcfirst {
@@ -204,6 +200,7 @@ main {
 .clockcards {
   font-size: 1em;
   color: rgb(153, 152, 152);
+
 }
 
 .belowtvccards {
@@ -260,6 +257,7 @@ main {
   width: 100%;
   height: 100%;
   background-color: white;
+  /* This will be the color of the "gaps" */
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   overflow: hidden;
@@ -272,6 +270,7 @@ main {
   width: 100%;
   border-collapse: separate !important;
   border-spacing: 2px 2px !important;
+  /* HORIZONTAL & VERTICAL gap (e.g., 2px) */
   flex-grow: 1;
   table-layout: fixed;
 }
@@ -285,29 +284,37 @@ main {
   line-height: 1.25 !important;
   border: none !important;
   border-radius: 5px !important;
+  /* DEFAULT ROUNDING FOR ALL CELLS */
 }
 
+/* Header Styles - MODIFIED FOR INDIVIDUAL ROUNDING & GAPS */
 .zone-statistics-card .title-header,
+/* Target all th elements individually now */
 .zone-statistics-card .zone-header {
   color: white;
   font-weight: 600 !important;
   padding-top: 5px !important;
   padding-bottom: 5px !important;
   font-size: 0.8em !important;
+  /* Make title and zone headers same relative size for consistency */
+  /* border-radius: 5px !important; -- Already set on general th, td */
 }
 
 .zone-statistics-card .title-header {
   background-color: #5A5F92;
   padding-left: 8px !important;
   padding-right: 6px !important;
+  /* colspan will make it span, rounding applies correctly */
 }
 
 .zone-statistics-card .zone-header {
+  /* Green, Yellow, Red headers */
   text-align: center !important;
   padding-left: 3px !important;
   padding-right: 3px !important;
 }
 
+/* Specific background colors for zone headers */
 .zone-statistics-card .green-header {
   background-color: #63B979 !important;
 }
@@ -320,9 +327,12 @@ main {
   background-color: #E96064 !important;
 }
 
+
+/* Body Cell Styles */
 .zone-statistics-card .icon-cell,
 .zone-statistics-card .stat-name {
   background-color: #F8F9FA !important;
+  /* border-radius already applied by general td rule */
 }
 
 .zone-statistics-card .icon-cell {
@@ -336,15 +346,16 @@ main {
   color: #757575;
   font-weight: 700 !important;
   text-align: right;
-  /* Reverted to original or check if left is intended */
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   padding-right: 6px !important;
 }
 
+/* Styling for the data cells that get individual backgrounds and rounding */
 .zone-statistics-card .data-cell {
   text-align: center !important;
+  /* border-radius already applied by general td rule */
   padding-top: 2px !important;
   padding-bottom: 2px !important;
 }
@@ -361,6 +372,7 @@ main {
   background-color: #FDEEEE !important;
 }
 
+/* Data Lozenge Styling */
 .zone-statistics-card .data-lozenge {
   display: inline-block;
   background-color: white !important;
@@ -399,12 +411,11 @@ main {
 
 /* End of Zone Statistics Styling */
 
+/* /triage by interval map */
 .triagebyintervalmap {
-  /* Container for chart */
   height: 100%;
-  width: 29%;
-  /* Adjusted from 35% to make space if needed */
-  /* background-color: #353571; --  Removed as chart divs get white bg in HTML */
+  width: 35%;
+
 }
 
 .secondrow {
@@ -412,12 +423,14 @@ main {
   width: 100%;
 }
 
+
+/* third row */
 .thirdrow {
   height: 38%;
-  /* Check this if doctor table overflows height constraint */
   width: 100%;
 }
 
+/* waiting dashboard */
 .waitingdashboard {
   width: 45%;
 }
@@ -437,7 +450,7 @@ main {
 .waitingstatheadingtext {
   font-size: 1.2em;
   font-weight: 800;
-  /* color: #353571; -- Overridden by next line */
+  color: #353571;
   padding-left: 0.5em;
   color: white;
 }
@@ -465,7 +478,12 @@ main {
   font-size: 2.1em;
 }
 
-.waitingfortriage,
+.waitingfortriage {
+  box-shadow: 0px 0px 5px 0px rgb(209, 209, 209);
+  border: 1px solid #dcdcdc;
+  border-radius: 0.5em;
+}
+
 .waitingforconsultation {
   box-shadow: 0px 0px 5px 0px rgb(209, 209, 209);
   border: 1px solid #dcdcdc;
@@ -476,38 +494,38 @@ main {
 /* === Doctor Statistics (Image Style) === */
 .doctorstatistics-wrapper {
   background-color: #F4F6F9;
+  /* Very light grey background for the whole component */
   border-radius: 8px;
+  /* Rounded corners for the entire component */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   width: 55%;
-  display: flex !important;
-  flex-direction: column !important;
-  /* Max-height can be useful if the parent .thirdrow has a defined height */
-  /* max-height: 100%; */
-  /* Or a specific pixel value if .thirdrow is fixed */
 }
 
 .doctor-stats-main-header {
   background: #6A70A7;
+  /* Purplish-blue from image - adjust if needed */
+  /* Or a gradient: background: linear-gradient(to right, #6A70A7, #8088C0); */
   color: white;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   flex-shrink: 0;
   /* Prevent header from shrinking */
-  /* HTML p-3 class provides padding, e.g., padding: 1rem !important; */
 }
 
 .doctor-stats-main-header h5 {
   font-size: 1.1rem;
   font-weight: 500;
-  /* HTML m-0 class handles margin */
 }
 
 .doctor-stats-main-header .fa-user-injured {
   font-size: 1.2em;
+  /* Make icon slightly larger */
 }
+
 
 .search-container-img {
   width: 220px;
+  /* Adjust width as needed */
 }
 
 .search-icon-img {
@@ -515,19 +533,22 @@ main {
   top: 50%;
   transform: translateY(-50%);
   color: #9090B0;
+  /* Icon color inside search */
   font-size: 0.9em;
   z-index: 10;
 }
 
 .search-input-img {
   padding-left: 35px !important;
-  /* Space for icon from global * rule */
+  /* Space for the icon */
   background-color: white;
   border: 1px solid #DDE2E8;
   color: #333;
   font-size: 0.85rem;
   border-radius: 6px;
+  /* Rounded search input */
   height: calc(1.5em + .5rem + 2px);
+  /* BS sm height */
 }
 
 .search-input-img::placeholder {
@@ -543,94 +564,80 @@ main {
 }
 
 #doctorTableContainerImg {
-  flex-grow: 1 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  /* px-3 gives horizontal padding */
-  padding-left: 1rem !important;
-  /* from px-3 in HTML */
-  padding-right: 1rem !important;
-  /* from px-3 in HTML */
-  /* Reduce top/bottom padding for the container itself */
-  padding-top: 0.2rem !important;
-  /* Minimal top padding */
-  padding-bottom: 0.2rem !important;
-  /* Minimal bottom padding */
+  /* Padding is already on the container */
 }
 
 .doctor-table-header-row {
   font-size: 0.85rem;
   color: #555C65;
-  /* mb-2 gives margin-bottom: 0.5rem */
-  margin-bottom: 0.25rem !important;
-  /* Reduced margin for header */
-  flex-shrink: 0;
-  /* Prevent header from shrinking */
+  /* Dark grey for header text */
+  padding: 0 10px;
+  /* Horizontal padding for alignment with rows */
 }
 
 .doctor-table-header-row>div {
-  padding-bottom: 2px !important;
-  /* Minimal bottom padding for header text */
+  /* For the Doctor, Patients, Time labels */
+  padding-bottom: 8px;
 }
+
 
 /* Styling for each doctor data row (will be a div) */
-.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row {
-  display: flex !important;
-  align-items: center !important;
-  /* Vertically center content within the fixed height */
-  background-color: white !important;
-  border: 1px solid #ECEFF1 !important;
-  border-radius: 8px !important;
-  height: 2.1em !important;
-  /* EXAMPLE: Adjust this value carefully */
-  padding-left: 10px !important;
-  /* Horizontal padding */
-  padding-right: 10px !important;
-  /* margin-bottom: 4px !important; */
-  font-size: 0.9rem !important;
-  color: #343A40 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03) !important;
-  transition: box-shadow 0.2s ease-in-out !important;
+.doctor-data-row {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ECEFF1;
+  border-radius: 8px;
+  /* Rounded corners for each row */
+  padding: 10px 10px;
+  /* Padding inside each row */
+  margin-bottom: 8px;
+  /* Gap between rows */
+  font-size: 0.9rem;
+  color: #343A40;
+  /* Dark text for doctor name */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease-in-out;
 }
 
-.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row:last-child {
-  margin-bottom: 0 !important;
-}
-
-.doctorstatistics-wrapper #doctorTableContainerImg #doctorDataRowsContainer .doctor-data-row:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06) !important;
+.doctor-data-row:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
 }
 
 .doctor-data-row .doctor-name-cell {
-  flex-basis: 50% !important;
-  font-weight: 500 !important;
+  flex-basis: 50%;
+  font-weight: 500;
 }
 
 .doctor-data-row .patients-cell {
-  flex-basis: 25% !important;
-  text-align: center !important;
+  flex-basis: 25%;
+  text-align: center;
 }
 
 .doctor-data-row .patients-lozenge {
-  display: inline-block !important;
-  background-color: #ECEFF1 !important;
-  color: #546E7A !important;
-  padding: 1px 12px !important;
-  border-radius: 6px !important;
-  font-size: 0.85rem !important;
-  font-weight: 500 !important;
+  display: inline-block;
+  background-color: #ECEFF1;
+  /* Light grey for patient count */
+  color: #546E7A;
+  /* Darker grey text for patient count */
+  padding: 4px 12px;
+  border-radius: 6px;
+  /* Slightly less rounded lozenge */
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .doctor-data-row .time-cell {
-
-  flex-basis: 25% !important;
-  text-align: center !important;
-  font-weight: 500 !important;
+  flex-basis: 25%;
+  text-align: center;
+  font-weight: 500;
 }
 
 .doctor-data-row .time-cell .far.fa-clock,
 .doctor-data-row .time-cell .material-symbols-outlined.clock {
+  /* If you use material icon */
   color: #90A4AE;
+  /* Grey clock icon */
   margin-right: 5px;
   font-size: 0.9em;
   vertical-align: middle;
@@ -638,45 +645,53 @@ main {
 
 .doctor-data-row .time-cell .time-value.text-success {
   color: #28A745 !important;
+  /* Green for time */
 }
 
 .doctor-data-row .time-cell .time-value.text-danger {
   color: #DC3545 !important;
+  /* Red for time */
 }
 
-/* Pagination (Image Style) */
-#doctorPaginationContainerImg {
-  /* HTML p-3 provides padding: 1rem */
+.doctor-data-row .time-cell .time-value.text-warning {
+  color: #FFC107 !important;
+  /* Orange/Yellow for time */
 }
 
+
+/* Enhanced Pagination with Better Contrast */
 #doctorPaginationContainerImg .pagination {
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
   /* Remove default BS margin */
 }
 
 #doctorPaginationContainerImg .page-item .page-link {
-  color: #6C757D;
-  background-color: #F8F9FA;
-  border: 1px solid #DEE2E6;
-  margin: 0 3px !important;
-  /* Small gap between page items */
+  color: #495057;
+  background-color: #ffffff;
+  border: 2px solid #6A70A7;
+  margin: 0 3px;
   border-radius: 6px !important;
-  padding: 0.35rem 0.65rem !important;
+  padding: 0.35rem 0.65rem;
   font-size: 0.85rem;
+  font-weight: 500;
   box-shadow: none !important;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 #doctorPaginationContainerImg .page-item .page-link:hover {
-  background-color: #E9ECEF;
-  color: #495057;
+  background-color: #6A70A7;
+  color: #ffffff;
+  border-color: #5A5F92;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(106, 112, 167, 0.3);
 }
 
 #doctorPaginationContainerImg .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #6A70A7;
-  border-color: #6A70A7;
+  background-color: #353571;
+  border-color: #353571;
+  box-shadow: 0 2px 5px rgba(53, 53, 113, 0.3);
 }
 
 #doctorPaginationContainerImg .page-item.disabled .page-link {
@@ -684,100 +699,17 @@ main {
   pointer-events: none;
   background-color: #F8F9FA;
   border-color: #DEE2E6;
+  opacity: 0.6;
 }
 
+/* For the '...' separator */
 #doctorPaginationContainerImg .page-item.disabled .page-link[aria-disabled="true"] span {
   color: #6C757D;
 }
 
-#doctorPaginationContainerImg .page-item .page-link[aria-label="Previous"]::before {
-  content: "<";
-}
-
-#doctorPaginationContainerImg .page-item .page-link[aria-label="Next"]::before {
-  content: ">";
-}
-
-/* ================================================= */
-/* === STYLES FOR CHARTS AND MODAL  === */
-/* ================================================= */
-
-.chart-container {
-  /* This class would be manually added to chart parent divs in HTML if used */
-  padding: 10px !important;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.chart-container:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto;
-  padding: 25px !important;
-  border: none;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 900px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  animation: slideIn 0.4s;
-  position: absolute;
-  top: 20%;
-  left: 30%;
-}
-
-/* Modal styles - Bootstrap handles this but custom ones provided earlier */
-/* If using Bootstrap modal, ensure its CSS is loaded and not overridden here unless intended */
-
-/* The following keyframes and custom modal styling might conflict if Bootstrap's modal is working fine. */
-/* Consider removing if Bootstrap modal is preferred and working. */
-/*
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1050;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.7);
-  animation: fadeIn 0.3s;
-}
-
-
-
-.modal-title-text {
-  color: #333;
-  font-weight: 600;
-}
-
-.close-modal-btn { // This class isn't on the Bootstrap modal button, which uses .btn-close
-  color: #aaa;
-  float: right;
-  font-size: 32px;
+/* Arrow styling */
+#doctorPaginationContainerImg .page-item .page-link[aria-label="Previous"],
+#doctorPaginationContainerImg .page-item .page-link[aria-label="Next"] {
   font-weight: bold;
-  line-height: 1;
+  font-size: 1rem;
 }
-
-.close-modal-btn:hover,
-.close-modal-btn:focus {
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-chart-container { // This is #modalChartContainer in your HTML
-  height: 450px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } } */
