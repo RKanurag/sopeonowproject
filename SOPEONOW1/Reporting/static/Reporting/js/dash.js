@@ -266,15 +266,14 @@ function renderDoctorTable() {
 // Format time from seconds
 function formatTime(seconds) {
     const totalSeconds = parseInt(seconds, 10) || 0;
-    if (totalSeconds >= 3600) {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const secs = totalSeconds % 60;
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    
+    // Always return HH:MM format (no seconds)
+    if (hours > 0) {
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     } else {
-        const minutes = Math.floor(totalSeconds / 60);
-        const secs = totalSeconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        return `${minutes.toString().padStart(2, '0')}:${Math.floor(totalSeconds % 60).toString().padStart(2, '0')}`;
     }
 }
 
@@ -414,15 +413,15 @@ function initializeCharts(data) {
     const defaultOptions = {
         chart: {
             toolbar: {
-                show: true,
+                show: false,  // Hide toolbar in small cards
                 tools: {
                     download: true,
-                    selection: false,
-                    zoom: false,
-                    zoomin: false,
-                    zoomout: false,
-                    pan: false,
-                    reset: false
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true
                 }
             },
             animations: {
@@ -432,13 +431,13 @@ function initializeCharts(data) {
             }
         },
         stroke: {
-            curve: 'smooth',
-            width: 3
+            curve: 'smooth',  // This makes lines wavy/smooth
+            width: [0, 3, 0, 3] // No stroke for bars, 3px for lines
         },
         markers: {
-            size: 5,
+            size: [0, 5, 0, 5], // No markers for bars, 5px for lines
             hover: {
-                size: 7
+                size: [0, 7, 0, 7]
             }
         },
         grid: {
@@ -490,9 +489,16 @@ function initializeCharts(data) {
                 labels: {
                     style: {
                         colors: '#fff',
-                        fontSize: '10px'
+                        fontSize: '9px'
                     },
-                    rotate: -45
+                    rotate: -45,
+                    formatter: function(value) {
+                        // Truncate labels for small cards
+                        if (value && value.length > 8) {
+                            return value.substring(0, 5) + '...';
+                        }
+                        return value;
+                    }
                 }
             },
             yaxis: [
@@ -550,6 +556,7 @@ function initializeCharts(data) {
                 }
             },
             stroke: {
+                curve: 'smooth',
                 width: [0, 3, 0, 3] // No stroke for bars, 3px for lines
             }
         });
@@ -562,12 +569,18 @@ function initializeCharts(data) {
     if (zoneContainer && data.graphs?.AccidentEmergency?.Zone?.['barpie-1']) {
         const zoneData = data.graphs.AccidentEmergency.Zone['barpie-1'];
         const zoneChart = new ApexCharts(zoneContainer, {
-            ...defaultOptions,
             series: zoneData.pie.y,
             chart: {
-                ...defaultOptions.chart,
                 type: 'donut',
-                height: '100%'
+                height: '100%',
+                toolbar: {
+                    show: false
+                },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800
+                }
             },
             labels: zoneData.pie.x,
             colors: ['#FF4560', '#FEB019', '#00E396', '#775DD0'],
@@ -602,6 +615,12 @@ function initializeCharts(data) {
                         }
                     }
                 }
+            },
+            stroke: {
+                show: false  // No stroke for donut chart
+            },
+            grid: {
+                show: false  // No grid for donut chart
             }
         });
         zoneChart.render();
@@ -629,7 +648,14 @@ function initializeCharts(data) {
                 labels: {
                     rotate: -45,
                     style: {
-                        fontSize: '10px'
+                        fontSize: '9px'
+                    },
+                    formatter: function(value) {
+                        // Truncate labels for small cards
+                        if (value && value.length > 8) {
+                            return value.substring(0, 5) + '...';
+                        }
+                        return value;
                     }
                 }
             },
@@ -657,6 +683,7 @@ function initializeCharts(data) {
                 align: 'center'
             },
             stroke: {
+                curve: 'smooth',
                 width: [0, 3]
             },
             plotOptions: {
@@ -691,7 +718,24 @@ function initializeCharts(data) {
                 labels: {
                     rotate: -45,
                     style: {
-                        fontSize: '9px'
+                        fontSize: '8px'
+                    },
+                    formatter: function(value) {
+                        // Truncate doctor names for small cards
+                        if (value && value.length > 12) {
+                            // Show first name and initial of last name
+                            const parts = value.split(' ');
+                            if (parts.length > 1) {
+                                // Keep full first name if it's short
+                                if (parts[0].length <= 8) {
+                                    return parts[0] + ' ' + parts[1].charAt(0) + '.';
+                                } else {
+                                    return parts[0].substring(0, 7) + '...';
+                                }
+                            }
+                            return value.substring(0, 10) + '...';
+                        }
+                        return value;
                     }
                 }
             },
@@ -784,6 +828,37 @@ function showChartModal(chartKey, title) {
         const options = JSON.parse(JSON.stringify(chartInstances[chartKey].opts));
         options.chart.height = 500;
         
+        // Enable full toolbar for modal view
+        options.chart.toolbar.show = true;
+        options.chart.toolbar.tools = {
+            download: true,
+            selection: true,
+            zoom: true,
+            zoomin: true,
+            zoomout: true,
+            pan: true,
+            reset: true,
+            menu: true,
+            customIcons: []
+        };
+        
+        // Enable zoom and pan
+        options.chart.zoom = {
+            enabled: true,
+            type: 'x',
+            autoScaleYaxis: true
+        };
+        
+        // Remove label truncation for modal view
+        if (options.xaxis?.labels?.formatter) {
+            delete options.xaxis.labels.formatter;
+        }
+        
+        // Increase font size for better readability in modal
+        if (options.xaxis?.labels?.style) {
+            options.xaxis.labels.style.fontSize = '12px';
+        }
+        
         // Remove background for modal view
         if (options.chart.background) {
             delete options.chart.background;
@@ -818,7 +893,6 @@ function showChartModal(chartKey, title) {
         }
         
         // Enhance options for modal view
-        options.chart.toolbar.show = true;
         options.chart.animations.enabled = true;
         
         const modalChart = new ApexCharts(modalContainer, options);

@@ -5,7 +5,7 @@ register = template.Library()
 @register.filter(name='seconds_to_hhmm')
 def seconds_to_hhmm(seconds):
     """
-    Converts a duration in seconds to a string formatted as MM:SS or HH:MM:SS.
+    Converts a duration in seconds to a string formatted as HH:MM or MM:SS.
     """
     if seconds is None:
         return '00:00'
@@ -16,16 +16,14 @@ def seconds_to_hhmm(seconds):
             return '00:00'
     
     seconds = int(seconds)
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
     
-    # If seconds exceed 1 hour, show HH:MM:SS format
-    if seconds >= 3600:
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
-        secs = seconds % 60
-        return f'{hours:02}:{minutes:02}:{secs:02}'
+    # Always show HH:MM format
+    if hours > 0:
+        return f'{hours:02}:{minutes:02}'
     else:
         # For less than an hour, show MM:SS format
-        minutes = seconds // 60
         secs = seconds % 60
         return f'{minutes:02}:{secs:02}'
 
