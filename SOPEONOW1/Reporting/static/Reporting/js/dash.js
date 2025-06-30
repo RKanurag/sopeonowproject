@@ -277,6 +277,23 @@ function formatTime(seconds) {
     }
 }
 
+// Format time for modal display based on chart type
+function formatTimeForModal(seconds, chartType) {
+    const totalSeconds = parseInt(seconds, 10) || 0;
+    
+    if (chartType === 'interval') {
+        // For patients by interval - show HH:MM
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    } else {
+        // For triage and consultation - show MM:SS
+        const minutes = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+}
+
 // Get time class based on duration
 function getTimeClass(seconds) {
     if (seconds < 1800) return 'text-success';
@@ -481,14 +498,14 @@ function initializeCharts(data) {
                 ...defaultOptions.chart,
                 type: 'line',
                 height: '100%',
-                background: '#353571',
-                foreColor: '#fff'
+                background: 'transparent',
+                foreColor: '#333'
             },
             xaxis: {
                 categories: triageData.x,
                 labels: {
                     style: {
-                        colors: '#fff',
+                        colors: '#333',
                         fontSize: '9px'
                     },
                     rotate: -45,
@@ -506,12 +523,12 @@ function initializeCharts(data) {
                     title: {
                         text: 'Patients Count',
                         style: {
-                            color: '#fff'
+                            color: '#333'
                         }
                     },
                     labels: {
                         style: {
-                            colors: '#fff'
+                            colors: '#333'
                         }
                     }
                 },
@@ -520,12 +537,12 @@ function initializeCharts(data) {
                     title: {
                         text: 'Time (MM:SS)',
                         style: {
-                            color: '#fff'
+                            color: '#333'
                         }
                     },
                     labels: {
                         style: {
-                            colors: '#fff'
+                            colors: '#333'
                         },
                         formatter: function(value) {
                             return formatTime(value);
@@ -536,7 +553,7 @@ function initializeCharts(data) {
             colors: ['#00E396', '#FEB019', '#008FFB', '#FF4560'],
             legend: {
                 labels: {
-                    colors: '#fff'
+                    colors: '#333'
                 },
                 position: 'top',
                 horizontalAlign: 'center'
@@ -545,7 +562,7 @@ function initializeCharts(data) {
                 text: triageData.title || 'Triage Time By Interval',
                 align: 'center',
                 style: {
-                    color: '#fff',
+                    color: '#333',
                     fontSize: '16px'
                 }
             },
@@ -727,7 +744,7 @@ function initializeCharts(data) {
                             const parts = value.split(' ');
                             if (parts.length > 1) {
                                 // Keep full first name if it's short
-                                if (parts[0].length <= 8) {
+                                if (parts[0].length <= 7) {
                                     return parts[0] + ' ' + parts[1].charAt(0) + '.';
                                 } else {
                                     return parts[0].substring(0, 7) + '...';
@@ -865,18 +882,32 @@ function showChartModal(chartKey, title) {
             options.chart.foreColor = '#373d3f';
         }
         
-        // Fix colors for modal view
+        // Fix colors and formatters for modal view
         if (options.xaxis?.labels?.style?.colors) {
             options.xaxis.labels.style.colors = '#373d3f';
         }
         if (options.yaxis) {
             if (Array.isArray(options.yaxis)) {
-                options.yaxis.forEach(axis => {
+                options.yaxis.forEach((axis, index) => {
                     if (axis.labels?.style?.colors) {
                         axis.labels.style.colors = '#373d3f';
                     }
                     if (axis.title?.style?.color) {
                         axis.title.style.color = '#373d3f';
+                    }
+                    // Update time format in title and formatter based on chart type
+                    if (axis.opposite && (axis.title?.text?.includes('Time') || axis.title?.text?.includes('Average Time'))) {
+                        if (chartKey === 'patientsInterval') {
+                            axis.title.text = 'Average Time (HH:MM)';
+                            axis.labels.formatter = function(value) {
+                                return formatTimeForModal(value, 'interval');
+                            };
+                        } else if (chartKey === 'triageInterval' || chartKey === 'doctorConsultation') {
+                            axis.title.text = axis.title.text.includes('Average') ? 'Average Time (MM:SS)' : 'Time (MM:SS)';
+                            axis.labels.formatter = function(value) {
+                                return formatTimeForModal(value, 'triage');
+                            };
+                        }
                     }
                 });
             } else {
