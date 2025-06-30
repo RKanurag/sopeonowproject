@@ -551,13 +551,14 @@ function initializeCharts(data) {
                 }
             ],
             colors: ['#00E396', '#FEB019', '#008FFB', '#FF4560'],
-            legend: {
-                labels: {
-                    colors: '#333'
-                },
-                position: 'top',
-                horizontalAlign: 'center'
-            },
+legend: {
+    labels: {
+        colors: '#333'
+    },
+    position: 'top',
+    horizontalAlign: 'center',
+    offsetY: -15
+},
             title: {
                 text: triageData.title || 'Triage Time By Interval',
                 align: 'center',
