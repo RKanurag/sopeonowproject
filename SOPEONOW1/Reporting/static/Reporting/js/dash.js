@@ -598,13 +598,15 @@ legend: {
                     enabled: true,
                     easing: 'easeinout',
                     speed: 800
-                }
+                },
+                // Add padding to avoid overlap
             },
             labels: zoneData.pie.x,
             colors: ['#FF4560', '#FEB019', '#00E396', '#775DD0'],
             title: {
                 text: zoneData.title || 'Patients by Zone',
-                align: 'center'
+                align: 'center',
+                offsetY: 10 // Shift title down to avoid overlap
             },
             dataLabels: {
                 enabled: true,
@@ -649,149 +651,150 @@ legend: {
     const intervalContainer = document.querySelector(".patientsbyInterval");
     if (intervalContainer && data.graphs?.AccidentEmergency?.interval?.['barline-1']) {
         const intervalData = data.graphs.AccidentEmergency.interval['barline-1'];
-        const intervalChart = new ApexCharts(intervalContainer, {
-            ...defaultOptions,
-            series: intervalData.y.map(item => ({
-                name: item.name,
-                type: item.type === 'column' ? 'bar' : item.type,
-                data: item.data
-            })),
-            chart: {
-                ...defaultOptions.chart,
-                type: 'line',
-                height: '100%'
-            },
-            xaxis: {
-                categories: intervalData.x,
-                labels: {
-                    rotate: -45,
-                    style: {
-                        fontSize: '9px'
-                    },
-                    formatter: function(value) {
-                        // Truncate labels for small cards
-                        if (value && value.length > 8) {
-                            return value.substring(0, 5) + '...';
-                        }
-                        return value;
-                    }
-                }
-            },
-            yaxis: [
-                {
-                    title: {
-                        text: 'Total Visits'
-                    }
+    const intervalChart = new ApexCharts(intervalContainer, {
+        ...defaultOptions,
+        series: intervalData.y.map(item => ({
+            name: item.name,
+            type: item.type === 'column' ? 'bar' : item.type,
+            data: item.data
+        })),
+        chart: {
+            ...defaultOptions.chart,
+            type: 'line',
+            height: '100%'
+        },
+        xaxis: {
+            categories: intervalData.x,
+            labels: {
+                rotate: -45,
+                style: {
+                    fontSize: '9px'
                 },
-                {
-                    opposite: true,
-                    title: {
-                        text: 'Average Time'
-                    },
-                    labels: {
-                        formatter: function(value) {
-                            return formatTime(value);
-                        }
+                formatter: function(value) {
+                    // Truncate labels for small cards
+                    if (value && value.length > 8) {
+                        return value.substring(0, 5) + '...';
                     }
-                }
-            ],
-            colors: ['#008FFB', '#FEB019'],
-            title: {
-                text: intervalData.title || 'Patients By Interval',
-                align: 'center'
-            },
-            stroke: {
-                curve: 'smooth',
-                width: [0, 3]
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 5,
-                    columnWidth: '50%'
+                    return value;
                 }
             }
-        });
-        intervalChart.render();
-        chartInstances['patientsInterval'] = intervalChart;
+        },
+        yaxis: [
+            {
+                title: {
+                    text: 'Total Visits'
+                }
+            },
+            {
+                opposite: true,
+                title: {
+                    text: 'Average Time'
+                },
+                labels: {
+                    formatter: function(value) {
+                        return formatTime(value);
+                    }
+                }
+            }
+        ],
+        colors: ['#008FFB', '#FEB019'],
+        title: {
+            text: intervalData.title || 'Patients By Interval',
+            align: 'center'
+        },
+        stroke: {
+            curve: 'smooth',
+            width: [0, 3]
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 5,
+                columnWidth: '50%'
+            }
+        }
+    });
+    intervalChart.render();
+    chartInstances['patientsInterval'] = intervalChart;
     }
     
     // 4. Consultation by Doctor Chart
     const doctorContainer = document.querySelector(".patientsbyDoctor");
     if (doctorContainer && data.graphs?.AccidentEmergency?.Doctor?.['barline-1']) {
         const doctorData = data.graphs.AccidentEmergency.Doctor['barline-1'];
-        const doctorChart = new ApexCharts(doctorContainer, {
-            ...defaultOptions,
-            series: doctorData.y.map(item => ({
-                name: item.name,
-                type: item.type === 'column' ? 'bar' : item.type,
-                data: item.data
-            })),
-            chart: {
-                ...defaultOptions.chart,
-                type: 'line',
-                height: '100%'
-            },
-            xaxis: {
-                categories: doctorData.x,
-                labels: {
-                    rotate: -45,
-                    style: {
-                        fontSize: '8px'
-                    },
-                    formatter: function(value) {
-                        // Truncate doctor names for small cards
-                        if (value && value.length > 12) {
-                            // Show first name and initial of last name
-                            const parts = value.split(' ');
-                            if (parts.length > 1) {
-                                // Keep full first name if it's short
-                                if (parts[0].length <= 7) {
-                                    return parts[0] + ' ' + parts[1].charAt(0) + '.';
-                                } else {
-                                    return parts[0].substring(0, 7) + '...';
-                                }
-                            }
-                            return value.substring(0, 10) + '...';
-                        }
-                        return value;
-                    }
-                }
-            },
-            yaxis: [
-                {
-                    title: {
-                        text: 'Total Visits'
-                    }
+    const doctorChart = new ApexCharts(doctorContainer, {
+        ...defaultOptions,
+        series: doctorData.y.map(item => ({
+            name: item.name,
+            type: item.type === 'column' ? 'bar' : item.type,
+            data: item.data
+        })),
+        chart: {
+            ...defaultOptions.chart,
+            type: 'line',
+            height: '100%'
+        },
+        xaxis: {
+            categories: doctorData.x,
+            labels: {
+                rotate: -45,
+                style: {
+                    fontSize: '8px'
                 },
-                {
-                    opposite: true,
-                    title: {
-                        text: 'Average Time'
-                    },
-                    labels: {
-                        formatter: function(value) {
-                            return formatTime(value);
+                formatter: function(value) {
+                    // Truncate doctor names for small cards
+                    if (value && value.length > 12) {
+                        // Show first name and initial of last name
+                        const parts = value.split(' ');
+                        if (parts.length > 1) {
+                            // Keep full first name if it's short
+                            if (parts[0].length <= 7) {
+                                return parts[0] + ' ' + parts[1].charAt(0) + '.';
+                            } else {
+                                return parts[0].substring(0, 7) + '...';
+                            }
                         }
+                        return value.substring(0, 10) + '...';
                     }
-                }
-            ],
-            colors: ['#00E396', '#FF4560'],
-            title: {
-                text: doctorData.title || 'Consultation by Doctor',
-                align: 'center'
-            },
-            stroke: {
-                width: [0, 3]
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 5,
-                    columnWidth: '50%'
+                    return value;
                 }
             }
-        });
-        doctorChart.render();
-        chartInstances['doctorConsultation'] = doctorChart;
+        },
+        yaxis: [
+            {
+                title: {
+                    text: 'Total Visits'
+                }
+            },
+            {
+                opposite: true,
+                title: {
+                    text: 'Average Time'
+                },
+                labels: {
+                    formatter: function(value) {
+                        return formatTime(value);
+                    }
+                }
+            }
+        ],
+        colors: ['#00E396', '#FF4560'],
+        title: {
+            text: doctorData.title || 'Consultation by Doctor',
+            align: 'center'
+        },
+        stroke: {
+            curve: 'smooth',
+            width: [0, 3]
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 5,
+                columnWidth: '50%'
+            }
+        }
+    });
+    doctorChart.render();
+    chartInstances['doctorConsultation'] = doctorChart;
     }
 }
 
