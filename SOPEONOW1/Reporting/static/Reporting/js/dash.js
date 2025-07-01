@@ -1,22 +1,22 @@
-// Global variables
+// Keep track of everything we need across the app
 let doctorData = [];
 let currentPage = 1;
 let itemsPerPage = 4;
 let chartInstances = {};
 let dashboardData = null;
 
-// Initialize when DOM is loaded
+// Start everything up once the page loads
 document.addEventListener('DOMContentLoaded', function() {
-    // Fetch data from management.json
+    // Go grab our data first thing
     fetchDashboardData();
 });
 
-// Fetch dashboard data from management.json
+// Pull in all the dashboard info from our JSON file
 function fetchDashboardData() {
-    // Show loading state
+    // Let users know we're working on it
     showLoadingState();
     
-    // Fetch data from media/management.json
+    // Hit the management.json file for all our data
     fetch('/media/management.json')
         .then(response => {
             if (!response.ok) {
@@ -28,7 +28,7 @@ function fetchDashboardData() {
             console.log('Data loaded successfully:', data);
             dashboardData = data;
             
-            // Initialize all components
+            // Now we can set up everything else
             initializeDashboard(data);
         })
         .catch(error => {
@@ -37,15 +37,15 @@ function fetchDashboardData() {
         });
 }
 
-// Show loading state
+// Show those spinning wheels while we load
 function showLoadingState() {
-    // Show loading in doctor statistics
+    // Put a loading message in the doctor table area
     const doctorContainer = document.getElementById('doctorDataRowsContainer');
     if (doctorContainer) {
         doctorContainer.innerHTML = '<p class="text-center text-muted p-5">Loading dashboard data...</p>';
     }
     
-    // Show loading in charts
+    // Add spinners to all our chart containers too
     const chartContainers = ['.triagebyintervalmap', '.traigebyzonemap', '.patientsbyInterval', '.patientsbyDoctor'];
     chartContainers.forEach(selector => {
         const container = document.querySelector(selector);
@@ -55,15 +55,15 @@ function showLoadingState() {
     });
 }
 
-// Show error state
+// Uh oh, something went wrong - let people know
 function showErrorState(message) {
-    // Show error in doctor statistics
+    // Replace doctor table with error message
     const doctorContainer = document.getElementById('doctorDataRowsContainer');
     if (doctorContainer) {
         doctorContainer.innerHTML = `<p class="text-center text-danger p-5">${message}</p>`;
     }
     
-    // Show error in charts
+    // Show the same error in all chart areas
     const chartContainers = ['.triagebyintervalmap', '.traigebyzonemap', '.patientsbyInterval', '.patientsbyDoctor'];
     chartContainers.forEach(selector => {
         const container = document.querySelector(selector);
@@ -73,28 +73,28 @@ function showErrorState(message) {
     });
 }
 
-// Initialize dashboard with fetched data
+// Time to build the whole dashboard now that we have data
 function initializeDashboard(data) {
     try {
-        // Log data for verification
+        // Let's see what we're working with
         console.log('Dashboard Data Structure:', data);
         verifyDataMapping(data);
         
-        // Initialize doctor statistics
+        // Get the doctor stats table ready
         initializeDoctorStatistics(data);
         
-        // Initialize all charts with a small delay to ensure DOM is ready
+        // Give the DOM a moment to catch up before drawing charts
         setTimeout(() => {
             initializeCharts(data);
         }, 100);
         
-        // Setup modal functionality
+        // Set up the modal popups for chart details
         setupModalFunctionality();
         
-        // Update dynamic values
+        // Fill in all the numbers on the page
         updateDynamicValues(data);
         
-        // Setup responsive behavior
+        // Make sure everything looks good on different screen sizes
         setupResponsiveBehavior();
         
     } catch (error) {
@@ -103,11 +103,11 @@ function initializeDashboard(data) {
     }
 }
 
-// Verify data mapping for debugging
+// Debug helper - let's make sure our data looks right
 function verifyDataMapping(data) {
     console.log('=== DATA VERIFICATION ===');
     
-    // Verify Key Metrics
+    // Check if we got all the key numbers we need
     console.log('Key Metrics:', {
         'Total Visits': data.key_metrics?.total?.count,
         'Registration Time': formatTime(data.key_metrics?.registration?.time || 0),
@@ -122,7 +122,7 @@ function verifyDataMapping(data) {
         }
     });
     
-    // Verify Zone Statistics
+    // Make sure zone data is there
     console.log('Zone Statistics:', {
         'Green Zone': {
             'Total Visits': data.zonestats?.green?.total_visits_count,
@@ -141,7 +141,7 @@ function verifyDataMapping(data) {
         }
     });
     
-    // Verify Graph Data
+    // Check if we have chart data to work with
     if (data.graphs?.AccidentEmergency) {
         console.log('Graph Data Available:', {
             'Triage Data': data.graphs.AccidentEmergency.triage?.['comparison-1'] ? 'Yes' : 'No',
@@ -150,7 +150,7 @@ function verifyDataMapping(data) {
             'Doctor Data': data.graphs.AccidentEmergency.Doctor?.['barline-1'] ? 'Yes' : 'No'
         });
         
-        // Show triage data structure
+        // Take a peek at the triage chart structure
         if (data.graphs.AccidentEmergency.triage?.['comparison-1']) {
             const triageData = data.graphs.AccidentEmergency.triage['comparison-1'];
             console.log('Triage Chart Series:', triageData.y.map(series => ({
@@ -162,7 +162,7 @@ function verifyDataMapping(data) {
         }
     }
     
-    // Verify Doctor Statistics
+    // See what doctor info we have
     console.log('Doctor Statistics:', {
         'Total Doctors': data.docstats?.length || 0,
         'Sample Doctors': data.docstats?.slice(0, 3).map(doc => ({
@@ -175,22 +175,22 @@ function verifyDataMapping(data) {
     console.log('=== END VERIFICATION ===');
 }
 
-// Setup responsive behavior
+// Make sure the table looks good on different screen sizes
 function setupResponsiveBehavior() {
-    // Set initial items per page to 4
+    // Start with 4 rows - seems like a good default
     itemsPerPage = 4;
     
-    // Calculate items per page based on available height
+    // Figure out how many rows we can actually fit
     function calculateItemsPerPage() {
         const container = document.getElementById('doctorTableContainerImg');
         if (container) {
-            const availableHeight = container.offsetHeight - 60; // Subtract header height
-            const rowHeight = 65; // Approximate height of each doctor row
+            const availableHeight = container.offsetHeight - 60; // Leave room for the header
+            const rowHeight = 65; // Each doctor row is about this tall
             const calculatedItems = Math.floor(availableHeight / rowHeight);
-            // Only update if it's a significant change and keep it between 2 and 4
+            // Don't go crazy - keep it between 2 and 4 rows
             const newItemsPerPage = Math.max(2, Math.min(4, calculatedItems));
             
-            // Only update if there's a significant change
+            // Only bother updating if it's actually different
             if (Math.abs(newItemsPerPage - itemsPerPage) >= 1) {
                 itemsPerPage = newItemsPerPage;
                 renderDoctorTable();
@@ -199,20 +199,20 @@ function setupResponsiveBehavior() {
         }
     }
     
-    // Only recalculate on actual window resize, not during search
+    // Don't go crazy with resize events - wait a bit between them
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
             calculateItemsPerPage();
-        }, 250); // Debounce resize events
+        }, 250); // Wait a quarter second before recalculating
     });
     
-    // Don't calculate initially - keep it at 4
+    // Skip the initial calculation - 4 rows works fine
     // calculateItemsPerPage();
 }
 
-// Initialize Doctor Statistics
+// Set up the doctor statistics table
 function initializeDoctorStatistics(data) {
     if (data.docstats && Array.isArray(data.docstats)) {
         doctorData = data.docstats;
@@ -226,7 +226,7 @@ function initializeDoctorStatistics(data) {
     }
 }
 
-// Render doctor table
+// Draw the actual doctor table rows
 function renderDoctorTable() {
     const container = document.getElementById('doctorDataRowsContainer');
     if (!container) return;
@@ -263,13 +263,13 @@ function renderDoctorTable() {
     });
 }
 
-// Format time from seconds
+// Turn seconds into a nice HH:MM or MM:SS string
 function formatTime(seconds) {
     const totalSeconds = parseInt(seconds, 10) || 0;
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     
-    // Always return HH:MM format (no seconds)
+    // Always show hours and minutes, no seconds
     if (hours > 0) {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     } else {
@@ -277,31 +277,31 @@ function formatTime(seconds) {
     }
 }
 
-// Format time for modal display based on chart type
+// Format time differently depending on chart type for modal display
 function formatTimeForModal(seconds, chartType) {
     const totalSeconds = parseInt(seconds, 10) || 0;
     
     if (chartType === 'interval') {
-        // For patients by interval - show HH:MM
+        // For interval charts, show HH:MM
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     } else {
-        // For triage and consultation - show MM:SS
+        // For triage and consultation, show MM:SS
         const minutes = Math.floor(totalSeconds / 60);
         const secs = totalSeconds % 60;
         return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 }
 
-// Get time class based on duration
+// Pick a color class based on how long the time is
 function getTimeClass(seconds) {
     if (seconds < 1800) return 'text-success';
     else if (seconds < 3600) return 'text-warning';
     else return 'text-danger';
 }
 
-// Setup doctor search
+// Set up the search box to filter doctors by name
 function setupDoctorSearch() {
     const searchInput = document.getElementById('doctorSearchInputImg');
     if (!searchInput) return;
@@ -324,7 +324,7 @@ function setupDoctorSearch() {
     });
 }
 
-// Setup pagination
+// Build the pagination controls for the doctor table
 function setupPagination() {
     const container = document.getElementById('doctorPaginationContainerImg');
     if (!container) return;
@@ -402,7 +402,7 @@ function setupPagination() {
     container.innerHTML = paginationHTML;
 }
 
-// Change page function - make it global
+// Change the current page and update the table and pagination
 window.changePage = function(page) {
     const totalPages = Math.ceil(doctorData.length / itemsPerPage);
     if (page >= 1 && page <= totalPages) {
@@ -413,11 +413,11 @@ window.changePage = function(page) {
     return false;
 }
 
-// Initialize all charts
+// Set up all the charts with the data we got
 function initializeCharts(data) {
     console.log('Initializing charts with data:', data);
     
-    // Clear loading spinners
+    // Clear out those loading spinners
     const chartContainers = ['.triagebyintervalmap', '.traigebyzonemap', '.patientsbyInterval', '.patientsbyDoctor'];
     chartContainers.forEach(selector => {
         const container = document.querySelector(selector);
@@ -426,7 +426,7 @@ function initializeCharts(data) {
         }
     });
     
-    // Chart options with modern styling
+    // Some nice default styling for all our charts
     const defaultOptions = {
         chart: {
             toolbar: {
@@ -474,7 +474,7 @@ function initializeCharts(data) {
     if (triageContainer && data.graphs?.AccidentEmergency?.triage?.['comparison-1']) {
         const triageData = data.graphs.AccidentEmergency.triage['comparison-1'];
         
-        // Fix the series names to be more descriptive
+        // Fix up the series names so they make more sense
         const fixedSeries = triageData.y.map((item, index) => {
             let fixedName = item.name;
             // Add context to differentiate between count and time
@@ -582,7 +582,7 @@ legend: {
         chartInstances['triageInterval'] = triageChart;
     }
     
-    // 2. Patients by Zone Chart
+    // 2. Patients by Zone Chart - nice donut chart
     const zoneContainer = document.querySelector(".traigebyzonemap");
     if (zoneContainer && data.graphs?.AccidentEmergency?.Zone?.['barpie-1']) {
         const zoneData = data.graphs.AccidentEmergency.Zone['barpie-1'];
@@ -687,7 +687,7 @@ legend: {
             {
                 opposite: true,
                 title: {
-                    text: 'Average Time'
+                    text: 'Average Time (HH:MM)',
                 },
                 labels: {
                     formatter: function(value) {
@@ -767,7 +767,7 @@ legend: {
             {
                 opposite: true,
                 title: {
-                    text: 'Average Time'
+                    text: 'Average Time (MM:SS)'
                 },
                 labels: {
                     formatter: function(value) {
@@ -797,9 +797,9 @@ legend: {
     }
 }
 
-// Setup modal functionality
+// Set up modal popups so people can see chart details
 function setupModalFunctionality() {
-    // Create modal HTML with centered styling
+    // Create the modal HTML and stick it on the page
     const modalHTML = `
         <div class="modal fade" id="chartModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -819,7 +819,7 @@ function setupModalFunctionality() {
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
-    // Add click handlers to charts
+    // Make all the charts clickable
     const chartContainers = [
         { selector: '.triagebyintervalmap', key: 'triageInterval', title: 'Triage Time By Interval - Detailed View' },
         { selector: '.traigebyzonemap', key: 'zoneDistribution', title: 'Patients by Zone - Detailed View' },
@@ -836,21 +836,21 @@ function setupModalFunctionality() {
     });
 }
 
-// Show chart in modal
+// Show a bigger version of the chart in a modal
 function showChartModal(chartKey, title) {
     const modal = new bootstrap.Modal(document.getElementById('chartModal'));
     document.getElementById('chartModalTitle').textContent = title;
     
-    // Clear previous chart
+    // Clear out any previous chart
     const modalContainer = document.getElementById('modalChartContainer');
     modalContainer.innerHTML = '';
     
-    // Clone chart options and render in modal
+    // Clone the chart and make it bigger with more features
     if (chartInstances[chartKey]) {
         const options = JSON.parse(JSON.stringify(chartInstances[chartKey].opts));
         options.chart.height = 500;
         
-        // Enable full toolbar for modal view
+        // Turn on all the toolbar features for the modal
         options.chart.toolbar.show = true;
         options.chart.toolbar.tools = {
             download: true,
@@ -864,30 +864,30 @@ function showChartModal(chartKey, title) {
             customIcons: []
         };
         
-        // Enable zoom and pan
+        // Let people zoom and pan around
         options.chart.zoom = {
             enabled: true,
             type: 'x',
             autoScaleYaxis: true
         };
         
-        // Remove label truncation for modal view
+        // Don't truncate labels in the modal - we have more space
         if (options.xaxis?.labels?.formatter) {
             delete options.xaxis.labels.formatter;
         }
         
-        // Increase font size for better readability in modal
+        // Make text bigger for easier reading
         if (options.xaxis?.labels?.style) {
             options.xaxis.labels.style.fontSize = '12px';
         }
         
-        // Remove background for modal view
+        // Clean up the styling for modal view
         if (options.chart.background) {
             delete options.chart.background;
             options.chart.foreColor = '#373d3f';
         }
         
-        // Fix colors and formatters for modal view
+        // Fix up all the colors for the modal
         if (options.xaxis?.labels?.style?.colors) {
             options.xaxis.labels.style.colors = '#373d3f';
         }
@@ -928,13 +928,13 @@ function showChartModal(chartKey, title) {
             options.title.style.color = '#373d3f';
         }
         
-        // Enhance options for modal view
+        // Make sure animations work in the modal
         options.chart.animations.enabled = true;
         
         const modalChart = new ApexCharts(modalContainer, options);
         modalChart.render();
         
-        // Clean up on modal close
+        // Clean up when the modal closes
         document.getElementById('chartModal').addEventListener('hidden.bs.modal', function () {
             modalChart.destroy();
         }, { once: true });
@@ -943,16 +943,16 @@ function showChartModal(chartKey, title) {
     modal.show();
 }
 
-// Update dynamic values
+// Update all the numbers and times displayed on the dashboard
 function updateDynamicValues(data) {
-    // Calculate IP transfers total if not present
+    // Calculate IP transfers total if it's missing
     if (data.key_metrics?.ip_transfers && !data.key_metrics.ip_transfers.total_count) {
         const completed = data.key_metrics.ip_transfers.completed?.count || 0;
         const inprogress = data.key_metrics.ip_transfers.inprogress?.count || 0;
         data.key_metrics.ip_transfers.total_count = completed + inprogress;
     }
     
-    // Update all the dynamic values with proper time formatting
+    // Map all our data to the right places on the page
     const updates = {
         'registrationtime': data.key_metrics?.registration?.time || 0,
         'timetotriage': data.key_metrics?.triage_done?.time || 0,
@@ -998,7 +998,7 @@ function updateDynamicValues(data) {
         'avgVisitTimeRed': data.zonestats?.red?.avg_visit_tm || 0
     };
     
-    // Log the updates for debugging
+    // Log some key updates for debugging
     console.log('Dynamic Updates:', {
         'IP Transfers Count': updates.iptransferscount,
         'IP Transfers Time': formatTime(updates.iptransferstime),
@@ -1009,17 +1009,15 @@ function updateDynamicValues(data) {
         'Waiting for Consultation': updates.waitingforconsultationcount
     });
     
-    // Update DOM elements
+    // Actually update the DOM elements
     Object.entries(updates).forEach(([id, value]) => {
         const element = document.getElementById(id);
         if (element) {
             if (id.includes('time') || id.includes('Time')) {
                 element.textContent = formatTime(value);
-                // Preserve existing classes except old time classes, then add new time class
+                // Remove old time color classes and add new ones
                 const timeClasses = ['text-success', 'text-warning', 'text-danger'];
-                // Remove old time classes
                 timeClasses.forEach(tc => element.classList.remove(tc));
-                // Add new time class
                 element.classList.add(getTimeClass(value));
             } else {
                 element.textContent = value;
@@ -1030,12 +1028,12 @@ function updateDynamicValues(data) {
     });
 }
 
-// Auto-refresh functionality (optional - refresh every 5 minutes)
+// Auto-refresh the dashboard every 5 minutes (optional)
 function setupAutoRefresh() {
     setInterval(() => {
         fetchDashboardData();
     }, 5 * 60 * 1000); // 5 minutes
 }
 
-// Uncomment if you want auto-refresh
+// Uncomment this if you want the dashboard to refresh automatically
 // setupAutoRefresh();
