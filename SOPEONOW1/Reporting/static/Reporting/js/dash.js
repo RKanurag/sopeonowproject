@@ -1011,12 +1011,12 @@ function updateDynamicValues(data) {
         if (element) {
             if (id.includes('time') || id.includes('Time')) {
                 element.textContent = formatTime(value);
-                // Only update class if it doesn't already have a class set by Django
-                if (!element.classList.contains('text-success') && 
-                    !element.classList.contains('text-warning') && 
-                    !element.classList.contains('text-danger')) {
-                    element.className = getTimeClass(value);
-                }
+                // Preserve existing classes except old time classes, then add new time class
+                const timeClasses = ['text-success', 'text-warning', 'text-danger'];
+                // Remove old time classes
+                timeClasses.forEach(tc => element.classList.remove(tc));
+                // Add new time class
+                element.classList.add(getTimeClass(value));
             } else {
                 element.textContent = value;
             }

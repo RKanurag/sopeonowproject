@@ -173,6 +173,11 @@ main {
 .tvcrhstext {
   background-color: #fdf3f3;
   color: #fe6464;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  margin-top: 0.25rem !important;
 }
 
 .tvclhstext {
