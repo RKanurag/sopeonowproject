@@ -605,8 +605,7 @@ legend: {
             colors: ['#FF4560', '#FEB019', '#00E396', '#775DD0'],
             title: {
                 text: zoneData.title || 'Patients by Zone',
-                align: 'center',
-                offsetY: 10 // Shift title down to avoid overlap
+                align: 'center'
             },
             dataLabels: {
                 enabled: true,
@@ -804,7 +803,9 @@ function setupModalFunctionality() {
     const modalHTML = `
         <div class="modal fade" id="chartModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
+                <div class="modal-content" style="
+    position: absolute;
+    left: 6%;">
                     <div class="modal-header">
                         <h5 class="modal-title" id="chartModalTitle">Chart Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
